@@ -15,8 +15,8 @@ const https = require('https'),
 		};
 let req = https.request(options, res => {
 	res.on('data', d => {
+		//returns true if successfull
 		let x = process.stdout.write(d);
-		console.log(x);
 	});
 });
 req.on('error', error => {
