@@ -1,6 +1,6 @@
 "use strict";
 const https = require('https'),
-				url = '/t1/wds/rest/getSeriesInforFromVector',
+				url = '/t1/wds/rest/getSeriesInfoFromVector',
 					v = '1',
 			 data =  '[{\"vectorId\":' + v + '}]',
 		options = {
@@ -15,8 +15,8 @@ const https = require('https'),
 		};
 let req = https.request(options, res => {
 	res.on('data', d => {
-		//let x = process.stdout.write(d);
-		console.log(d);
+		let x = process.stdout.write(d);
+		console.log(x);
 	});
 });
 req.on('error', error => {
