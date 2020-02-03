@@ -1,0 +1,19 @@
+{
+  "name": "candev-worshop-mtl",
+  "version": "1.0.0",
+  "description": "REST API client for StatCan Web Data Services",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GwizBilly/CANDEV-worshop-MTL.git"
+  },
+  "author": "Guillaume Savoie",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GwizBilly/CANDEV-worshop-MTL/issues"
+  },
+  "homepage": "https://github.com/GwizBilly/CANDEV-worshop-MTL#readme"
+}
