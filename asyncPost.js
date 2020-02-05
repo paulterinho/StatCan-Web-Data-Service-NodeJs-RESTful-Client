@@ -18,11 +18,15 @@ function getPromise() {
 		let req = https.request(options, (res) => {
 			let chunks_of_data = [];
 			res.on('data', (fragments) => {
-					chunks_of_data.push(fragments);
+				chunks_of_data.push(fragments);
 			});
 			res.on('end', () => {
 				let response_body = Buffer.concat(chunks_of_data);
-				resolve(response_body.toString());
+				resolve(
+					JSON.parse(
+						response_body.toString()
+					)
+				);
 			});
 			res.on('error', (error) => {
 				reject(error);
@@ -35,17 +39,19 @@ function getPromise() {
 		req.end();
 	});
 }
-async function makeRequest(request) {
+async function makeRequest() {
 	try {
+		console.clear();
 		let http_promise = getPromise();
 		let response_body = await http_promise;
+		// here goes some extra processing if we want
 		console.log(response_body);
 	}
 	catch(error) {
 		console.log(error);
 	}
 }
-
 (async function () {
 	await makeRequest();
+	console.log("finished!");
 })();
