@@ -1,4 +1,8 @@
 # CANDEV-worshop-MTL
 CLI nodejs REST client for StatCan web data service 
 
-https://www.statcan.gc.ca/eng/developers/wds
+# StatCan resource:
+* https://www.statcan.gc.ca/eng/developers/wds
+
+# nodejs Tutorial resource:
+* https://usefulangle.com/post/170/nodejs-synchronous-http-request
