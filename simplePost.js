@@ -13,10 +13,14 @@ const https = require('https'),
 				'Content-Length': data.length
 			}
 		};
-let req = https.request(options, res => {
-	res.on('data', d => {
-		//returns true if successfull
-		let x = process.stdout.write(d);
+let req = https.request(options, (res) => {
+	let chunks_of_data = [];
+	res.on('data', (fragments) => {
+		chunks_of_data.push(fragments);
+	});
+	res.on('end', () => {
+		let response_body = Buffer.concat(chunks_of_data);
+		console.log(JSON.parse(response_body.toString()));
 	});
 });
 req.on('error', error => {

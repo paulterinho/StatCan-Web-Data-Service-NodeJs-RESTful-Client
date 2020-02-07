@@ -13,6 +13,22 @@ const https = require('https'),
 				'Content-Length': data.length
 			}
 		};
+(async function () {
+	await makeRequest();
+	console.log("finished!");
+})();
+async function makeRequest() {
+	try {
+		console.clear();
+		let http_promise = getPromise();
+		let response_body = await http_promise;
+		// here goes some extra processing if we want
+		console.log(response_body);
+	}
+	catch(error) {
+		console.log(error);
+	}
+}
 function getPromise() {
 	return new Promise((resolve, reject) => {
 		let req = https.request(options, (res) => {
@@ -39,19 +55,3 @@ function getPromise() {
 		req.end();
 	});
 }
-async function makeRequest() {
-	try {
-		console.clear();
-		let http_promise = getPromise();
-		let response_body = await http_promise;
-		// here goes some extra processing if we want
-		console.log(response_body);
-	}
-	catch(error) {
-		console.log(error);
-	}
-}
-(async function () {
-	await makeRequest();
-	console.log("finished!");
-})();

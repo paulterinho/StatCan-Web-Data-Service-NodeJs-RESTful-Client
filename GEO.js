@@ -1,13 +1,11 @@
-const https = require('https');
-// should split into host + path
-const root =
-'https://www12.statcan.gc.ca/rest/census-recensement/CR2016Geo.json?';
-const lang = 'lang=E&'; 
-const geo  = 'geos=CSD&';// All Census Subdivisions (csd), 
-const cpt  = 'cpt=00';     // 24 = Québec
-
-const url = root + lang + geo + cpt;
-
+const https = require('https'),
+         fs = require('fs'),
+			 host = 'https://www12.statcan.gc.ca/', 
+       path = 'rest/census-recensement/CR2016Geo.json?',
+       lang = 'lang=E&', geo  = 'geos=PR&', cpt  = 'cpt=00',
+        url = host + path + lang + geo + cpt;
+       // 24 = Québec
+      // All Census Subdivisions (csd)
 (async function() {
 	await makeRequestByPromise();
 })();
@@ -16,6 +14,8 @@ async function makeRequestByPromise() {
 		let http_promise = getPromise();
 		let response_body = await http_promise;
 		console.log(response_body.length);
+		console.log(response_body);
+		output(response_body.join(""));
 	} catch(error) {
 		console.log(error);
 	}
@@ -52,4 +52,13 @@ function responseHandler(res) {
 		}
 	}
 	return list;
+}
+function output(_this) {
+	fs.writeFile("./GEO.csv", _this, function(err) {
+		if (err) {
+			return console.log(err);
+		} else {
+			return console.log("Looks like it worked...(list)");
+		}
+	});
 }
