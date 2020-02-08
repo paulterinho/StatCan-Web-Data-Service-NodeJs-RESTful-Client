@@ -80,7 +80,7 @@ function responseHandler(res) {
   function output(_this) {
     let s = "./GET.csv";
     fs.writeFile(s, _this, function(err) {
-      err ? console.log("Look!" + err) : console.log("File written as " + s);
+      err ? console.log("Look! " + err) : console.log("File written as " + s);
     });
   }
 }
