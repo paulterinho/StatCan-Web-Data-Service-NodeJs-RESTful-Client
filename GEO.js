@@ -2,7 +2,7 @@ const https = require('https'),
          fs = require('fs'),
        host = 'https://www12.statcan.gc.ca/', 
        path = 'rest/census-recensement/CR2016Geo.json?',
-       lang = 'lang=E&', geo  = 'geos=PR&', cpt  = 'cpt=00',
+       lang = 'lang=E&', geo  = 'geos=CSD&', cpt  = 'cpt=24',
         url = host + path + lang + geo + cpt;
        // 24 = Québec
       // All Census Subdivisions (csd)
@@ -20,7 +20,7 @@ async function makeRequestByPromise() {
     console.log("Looks like an error... :" + error);
   }
 	function output(_this) {
-		let s = "./GET.csv";
+		let s = "./GEO.csv";
 		fs.writeFile(s, _this, function(err) {
 			err ? console.log("Look! " + err) : console.log("File written as " + s);
 		});
