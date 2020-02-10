@@ -13,6 +13,7 @@ const https = require('https'),
 console.log("Fetching data for " + gLength + " geographic units");
 
 let accString = "", // accumulate responses in one long string
+			headers = "Name,ID,Density,Land Area\n",
          urls = []; // my list of requests to make (http GET)
 
 (function makeUrlsArray() {
@@ -31,6 +32,7 @@ let accString = "", // accumulate responses in one long string
   console.log("starting...");
   await makeRequestByPromise();
   console.log("finished!");
+	accString = headers + accString;
 	output(accString);
 	function output(_this) {
 		let s = "./GET.csv";
