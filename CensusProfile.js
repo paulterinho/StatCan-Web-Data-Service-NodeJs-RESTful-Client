@@ -29,7 +29,7 @@ let accString = "", // accumulate responses in one long string
 })();
 
 (async function() {
-  console.log("starting...");
+  console.log("started...");
   await makeRequestByPromise();
   console.log("finished!");
 	accString = headers + accString;
@@ -77,7 +77,7 @@ function getPromise(url) {
 	function responseHandler(res) {
 		let trimMsg = res.slice(2), // remove first two characters
 						obj = JSON.parse(trimMsg), // string to JS object
-				geoName = obj.DATA[0][4],
+				geoName = '\"' + obj.DATA[0][4] + '\"',
 					geoID = obj.DATA[0][2],
 				density = obj.DATA[5][13],
 			 landArea = obj.DATA[6][13],
