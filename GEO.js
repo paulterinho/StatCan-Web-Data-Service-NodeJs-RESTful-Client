@@ -5,7 +5,7 @@ const https = require('https'),
          fs = require('fs'), // file system
        host = 'https://www12.statcan.gc.ca/', 
        path = 'rest/census-recensement/CR2016Geo.json?',
-       lang = 'lang=E&', geo = 'geos=CSD&', cpt = 'cpt=00',
+       lang = 'lang=E&', geo = 'geos=CSD&', cpt = 'cpt=24',
         url = host + path + lang + geo + cpt;
        // cpt=24 === Québec
       // geos=CSD === Census Subdivisions

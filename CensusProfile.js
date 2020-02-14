@@ -3,6 +3,7 @@
 // https://www12.statcan.gc.ca/wds-sdw/cpr2016-eng.cfm
 const https = require('https'),
          fs = require('fs'), // file system
+				 rl = require('readline'),
        host = 'https://www12.statcan.gc.ca/',
        path = 'rest/census-recensement/CPR2016.json?',
        lang = 'lang=E&', geo = '', topic = 'topic=13&', notes = 'notes=0',
@@ -10,7 +11,26 @@ const https = require('https'),
      geoCSV = CSV.toString().split("\n"), //this is an array[]
     gLength = geoCSV.length;
 
+let pb = {
+	"size": gLength,
+	"cursor": 0,
+	"timer": null,
+	"start": function () {
+		process.stdout.write("\x1B[?25l")
+		rl.cursorTo(process.stdout, this.cursor, 0);
+	},
+	"increment": function () {		
+			process.stdout.write("\u2588");
+			this.cursor += 1;
+			if (this.cursor >= this.size) {
+				console.log("done!");
+			}
+		}
+}
+
 console.log("Fetching data for " + gLength + " geographic units");
+
+pb.start(gLength);
 
 let accString = "", // accumulate responses in one long string
 			headers = "Name,ID,Density,Land Area\n",
@@ -48,6 +68,7 @@ async function makeRequestByPromise() {
       let url = urls[i];
       let http_promise = getPromise(url);
       let response_body = await http_promise;
+			pb.increment();
     }
   } catch(error) {
     console.log(error);
