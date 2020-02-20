@@ -1,5 +1,5 @@
-# CANDEV-worshop-MTL
-CLI nodejs REST client for StatCan web data service 
+# Web Data Service (WDS) 
+NodeJs CLI REST client for StatCan Web Data Service
 
 #### Census Profile example
 1. run Geo.js to fetch unique geography identifiers (outputs GEO.csv).
