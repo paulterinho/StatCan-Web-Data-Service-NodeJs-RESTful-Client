@@ -1,11 +1,11 @@
 # CANDEV-worshop-MTL
 CLI nodejs REST client for StatCan web data service 
 
-# Census Profile example
+## Census Profile example
 1. run Geo.js to fetch unique geography identifiers (outputs GEO.csv).
 2. run CensusProfile.js to get Profile data for list of geographies (outputs GET.csv).
 
-# VectorID example
+## VectorID example
 1. run asyncPost.js to fetch Canadian population estimates (vectorID: 1) and display in console.log().
 
 # StatCan resource:
