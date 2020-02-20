@@ -1,7 +1,7 @@
 # Web Data Service (WDS) 
 NodeJs CLI REST client for StatCan Web Data Service
 
-*This is a work in progress!*
+>>This is a work in progress!
 
 #### Census Profile example
 1. run Geo.js to fetch unique geography identifiers (outputs GEO.csv).
