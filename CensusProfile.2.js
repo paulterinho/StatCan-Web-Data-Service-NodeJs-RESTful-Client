@@ -1,14 +1,17 @@
 "use strict";                                                              // 80
 // REST API documentation :
 // https://www12.statcan.gc.ca/wds-sdw/cpr2016-eng.cfm
-const CTP = 48, // Alberta
+const
+    GET_FILE = "./GET.csv",
+    GEO_ID_FILE = './GEO.csv',
+    CTP = 48, // Alberta
     https = require('https'),
     fs = require('fs'), // file system
     rl = require('readline'),
     host = 'https://www12.statcan.gc.ca/',
     path = 'rest/census-recensement/CPR2016.json?',
     lang = 'lang=E&', geo = 'geos=CT&', topic = 'topic=13&', notes = 'notes=0&', ctp = "ctp=" + CTP,
-    CSV = fs.readFileSync('./GEO.csv'),
+    CSV = fs.readFileSync(GEO_ID_FILE),
     geoCSV = CSV.toString().split("\n"); //this is an array[]
 
 let accString = "", // accumulate responses in one long string
@@ -53,32 +56,48 @@ pb.start(gLength);
 })();
 
 (async function () {
-    function output(_this, fileName) {
+
+    function output(_this, fileName, overwrite = true) {
         let s = fileName;
-        fs.writeFile(s, _this, function (err) {
-            err ? console.log("Look! " + err) : console.log("File written as " + s);
-        });
+        
+        if (overwrite == true) {
+            fs.writeFile(s, _this, function (err) {
+                err ? console.log("Look! " + err) : console.log("File written as " + s);
+            });
+        } else {
+            fs.appendFile(s, _this, function (err) {
+                if (err) throw err;
+                console.log('File appended to');
+            });
+        }
     }
 
     console.log("started..." + new Date().getTime() / 1000);
     await makeRequestByPromise();
     console.log("finished!" + new Date().getTime() / 1000);
     accString = headers + accString;
-    output(accString,  "./GET.csv");
-    output(failedUrls.join("\n"),  "./Errors.csv");
-    
+
+    fs.rename(GEO_ID_FILE, "BACKUP.csv", function (err) {
+
+        if (err) throw err;
+        console.log('File Renamed!');
+    });
+
+    output(accString, GET_FILE, false);
+    output(failedUrls.join("\n"), GEO_ID_FILE, true);
+
 })();
 
 async function makeRequestByPromise() {
-    
-    let promises =[];
+
+    let promises = [];
 
     try {
         for (let i = 0; i < gLength; i += 1) {
             let url = urls[i],
                 idToReportLaterIfErr = geoCSV[i];
             promises.push(getPromise(url, idToReportLaterIfErr));
-            
+
             /*let http_promise = getPromise(url);
             let response_body = await http_promise;
             console.log(".");
@@ -87,9 +106,9 @@ async function makeRequestByPromise() {
         }
 
         await Promise.all(promises)
-            .then(function(){
+            .then(function () {
                 console.log('all calls have finished');
-            }).catch(()=>{
+            }).catch(() => {
                 console.log("error");
             });
 
@@ -121,7 +140,7 @@ function getPromise(url, idToReportLaterIfErr) {
     });
 
     function responseHandler(res) {
-        
+
         let obj, geoName, geoID, density, landArea, fetchedData;
 
         try {
@@ -135,7 +154,7 @@ function getPromise(url, idToReportLaterIfErr) {
 
             accString += fetchedData.join() + "\n";
 
-            console.log("received: " +geoID);
+            console.log("received: " + geoID);
 
         } catch (error) {
             failedUrls.push(idToReportLaterIfErr);
