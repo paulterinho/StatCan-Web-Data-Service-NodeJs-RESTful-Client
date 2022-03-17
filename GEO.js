@@ -5,9 +5,9 @@ const https = require('https'),
          fs = require('fs'), // file system
        host = 'https://www12.statcan.gc.ca/', 
        path = 'rest/census-recensement/CR2016Geo.json?',
-       lang = 'lang=E&', geo = 'geos=CSD&', cpt = 'cpt=24',
-        url = host + path + lang + geo + cpt;
-       // cpt=24 === Québec
+       lang = 'lang=E&', geo = 'geos=CT&', cpt = 'cpt=48&', topic="topic=0",
+        url = host + path + lang + geo + cpt + topic;
+       // cpt=48 === Alberta
       // geos=CSD === Census Subdivisions
 
 (async function() {
@@ -54,14 +54,43 @@ function getPromise() {
 }
 
 function responseHandler(res) {
-  let trimMsg = res.slice(2), // remove first two characters of string
-            p = JSON.parse(trimMsg), // transform string into JS object
-         list = [],
-      pLength = p.DATA.length - 1;
 
-  for (let i = 0; i <= pLength; i += 1){
-    let pd = p.DATA[i][0];
-    i !== pLength ? list[i] = pd + "\n" : list[i] = pd;
-  }
+  
+  let trimMsg, // remove first two characters of string
+      stripped,
+      p, // transform string into JS object
+      list,
+      pLength,
+      colNames;
+
+ 
+      try{
+          
+          //trimMsg = res.slice(2); // remove first two characters of string
+          p = JSON.parse(res); // transform string into JS object
+          colNames = p.COLUMNS.join(",") + "\n"
+
+          list = [colNames];
+          pLength = p.DATA.length - 1;
+
+
+          // for each element in the row
+          for (let i = 1; i <= pLength; i += 1){
+              
+
+            let rowData = p.DATA[i],
+                
+            // Hardcode this becaue it's more performant than iterating
+            pd = rowData[0] + "," + rowData[1] + "," + rowData[2]+ "," + rowData[3]+ "," + rowData[4]+ "," + 
+                      rowData[5]+ "," + rowData[6]+ "," + rowData[7]+ "," + rowData[8];
+
+             
+            i !== pLength ? list[i] = pd + "\n" : list[i] = pd;
+          }
+
+      }catch(exp){
+        console.error(exp)
+      }
+  
   return list; // return an array
 }
