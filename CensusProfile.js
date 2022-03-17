@@ -1,12 +1,13 @@
 "use strict";                                                              // 80
 // REST API documentation :
 // https://www12.statcan.gc.ca/wds-sdw/cpr2016-eng.cfm
-const https = require('https'),
+const   CTP = 48, // Alberta
+        https = require('https'),
          fs = require('fs'), // file system
 				 rl = require('readline'),
        host = 'https://www12.statcan.gc.ca/',
        path = 'rest/census-recensement/CPR2016.json?',
-       lang = 'lang=E&', geo = '', topic = 'topic=13&', notes = 'notes=0',
+       lang = 'lang=E&', geo = 'geos=CT&', topic = 'topic=13&', notes = 'notes=0&', ctp = "ctp=" +CTP,
         CSV = fs.readFileSync('./GEO.csv'),
      geoCSV = CSV.toString().split("\n"), //this is an array[]
     gLength = geoCSV.length;
@@ -68,6 +69,7 @@ async function makeRequestByPromise() {
       let url = urls[i];
       let http_promise = getPromise(url);
       let response_body = await http_promise;
+      console.log(".");
 			pb.increment();
     }
   } catch(error) {
@@ -96,15 +98,20 @@ function getPromise(url) {
   // ***  
   });
 	function responseHandler(res) {
-		let trimMsg = res.slice(2), // remove first two characters
-						obj = JSON.parse(trimMsg), // string to JS object
-				geoName = '\"' + obj.DATA[0][4] + '\"',
+
+    try {
+      let obj = JSON.parse(res), // string to JS object
+				  geoName = '\"' + obj.DATA[0][4] + '\"',
 					geoID = obj.DATA[0][2],
-				density = obj.DATA[5][13],
-			 landArea = obj.DATA[6][13],
-		fetchedData = [geoName, geoID, density, landArea];
+				  density = obj.DATA[5][13],
+			    landArea = obj.DATA[6][13],
+		      fetchedData = [geoName, geoID, density, landArea];
 		
-		accString += fetchedData.join() + "\n";
+		  accString += fetchedData.join() + "\n";
+
+    } catch(error) {
+      console.log(error);
+    }
 	}
 }
 

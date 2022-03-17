@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/GwizBilly/CANDEV-worshop-MTL/issues"
   },
-  "homepage": "https://github.com/GwizBilly/CANDEV-worshop-MTL#readme"
+  "homepage": "https://github.com/GwizBilly/CANDEV-worshop-MTL#readme",
+  "devDependencies": {
+    "es6-promise": "^4.2.8",
+    "lodash": "^4.17.21"
+  }
 }
