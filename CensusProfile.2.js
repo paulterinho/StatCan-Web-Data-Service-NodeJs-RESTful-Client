@@ -10,7 +10,7 @@ const
     rl = require('readline'),
     host = 'https://www12.statcan.gc.ca/',
     path = 'rest/census-recensement/CPR2016.json?',
-    lang = 'lang=E&', geo = 'geos=CT&', topic = 'topic=13&', notes = 'notes=0&', ctp = "ctp=" + CTP,
+    lang = 'lang=E&', geo = 'geos=CT&', topic = '', notes = 'notes=0&', ctp = "ctp=" + CTP,
     CSV = fs.readFileSync(GEO_ID_FILE),
     geoCSV = CSV.toString().split("\n"); //this is an array[]
 
@@ -38,6 +38,21 @@ let pb = {
     }
 }
 
+function output(_this, fileName, overwrite = true) {
+    let s = fileName;
+
+    if (overwrite == true) {
+        fs.writeFile(s, _this, function (err) {
+            err ? console.log("Look! " + err) : console.log("File written as " + s);
+        });
+    } else {
+        fs.appendFile(s, _this, function (err) {
+            if (err) throw err;
+            console.log('File appended to');
+        });
+    }
+}
+
 console.log("Fetching data for " + gLength + " geographic units");
 
 pb.start(gLength);
@@ -57,25 +72,10 @@ pb.start(gLength);
 
 (async function () {
 
-    function output(_this, fileName, overwrite = true) {
-        let s = fileName;
-        
-        if (overwrite == true) {
-            fs.writeFile(s, _this, function (err) {
-                err ? console.log("Look! " + err) : console.log("File written as " + s);
-            });
-        } else {
-            fs.appendFile(s, _this, function (err) {
-                if (err) throw err;
-                console.log('File appended to');
-            });
-        }
-    }
-
     console.log("started..." + new Date().getTime() / 1000);
     await makeRequestByPromise();
     console.log("finished!" + new Date().getTime() / 1000);
-    accString = headers + accString;
+    //accString = headers + accString;
 
     fs.rename(GEO_ID_FILE, "BACKUP.csv", function (err) {
 
@@ -86,6 +86,7 @@ pb.start(gLength);
     output(accString, GET_FILE, false);
     output(failedUrls.join("\n"), GEO_ID_FILE, true);
 
+    console.warn("Add header row to CSV: " + headers)
 })();
 
 async function makeRequestByPromise() {
@@ -145,7 +146,50 @@ function getPromise(url, idToReportLaterIfErr) {
 
         try {
 
+
+            /*      
+                [0..99]
+                0:(19) ['48', 'Alberta', '2016S05078050003.01', '8050003.01', '0003.01', null, 'Population', 1000, '1.1.1', 0, 'Population, 2016', 1, null, 3977, null, null, '...', null, '...']
+                0:'48'
+                1:'Alberta'
+                2:'2016S05078050003.01'
+                3:'8050003.01'
+                4:'0003.01'
+                5:null
+                6:'Population'
+                7:1000
+                8:'1.1.1'
+                9:0
+                10:'Population, 2016'
+                11:1
+                12:null
+                13:3977
+                14:null
+                15:null
+                16:'...'
+                17:null
+                18:'...'
+            */
+
+            // Grab 3 (CT), 8(Question ID), 
+
             obj = JSON.parse(res); // string to JS object
+
+            var json = obj.DATA; //json3.items
+            var fields = Object.keys(obj.COLUMNS)
+            var replacer = function (key, value) { return value === null ? '' : value }
+            var csv = json.map(function (row) {
+                return fields.map(function (fieldName) {
+                    return JSON.stringify(row[fieldName], replacer)
+                }).join(',')
+            })
+            //csv.unshift(fields.join(',')) // add header column
+            csv = csv.join('\r\n');
+            csv = csv.replace('"', "");
+            console.log(csv)
+
+            output(accString, GET_FILE, false);
+
             geoName = '\"' + obj.DATA[0][4] + '\"';
             geoID = obj.DATA[0][2];
             density = obj.DATA[5][13];

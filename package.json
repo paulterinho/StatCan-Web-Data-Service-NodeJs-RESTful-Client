@@ -19,5 +19,8 @@
   "devDependencies": {
     "es6-promise": "^4.2.8",
     "lodash": "^4.17.21"
+  },
+  "dependencies": {
+    "json2csv": "^5.0.7"
   }
 }
